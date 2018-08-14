@@ -16,7 +16,8 @@ def get_username():
 
 
 def get_scope():
-    return "user-read-currently-playing"
+    #  return "user-read-currently-playing"
+    return "user-read-playback-state"
 
 
 def load_credentials(credentials_pickle_file):
@@ -44,7 +45,8 @@ def get_user_token(username, scope, credentials_dict):
 
 def get_current_song_info_json(token):
     sp = spotipy.Spotify(auth=token)
-    results = sp.current_user_playing_track()
+    #  results = sp.current_user_playing_track()
+    results = sp.current_playback()
     return results
 
 
