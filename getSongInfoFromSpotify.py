@@ -7,7 +7,7 @@ import json
 
 def check_args():
     if len(sys.argv) != 2:
-        print "Usage: %s username" % (sys.argv[0],)
+        print("Usage: %s username" % (sys.argv[0],))
         sys.exit(1)
 
 
@@ -21,7 +21,7 @@ def get_scope():
 
 def load_credentials(credentials_pickle_file):
     try:
-        with open('credentials.p', 'r') as c:
+        with open('credentials.p', 'rb') as c:
             return pickle.load(c)
     except IOError:
         print("Error: Couldn't open credentials file. Exiting.")
@@ -37,7 +37,7 @@ def get_user_token(username, scope, credentials_dict):
             redirect_uri=credentials_dict['SPOTIPY_REDIRECT_URI'],
             )
     if token is None:
-        print "Error: Can't get token for", username
+        print("Error: Can't get token for", username)
         sys.exit(1)
     return token
 
@@ -56,7 +56,7 @@ def parse_current_song_json(unparsed_json):
 
 def main():
     check_args()
-    print "Retrieving song info from Spotify"
+    print("Retrieving song info from Spotify")
     username = get_username()
     scope = get_scope()
     credentials_pickle_file = "credentials.p"
@@ -64,7 +64,7 @@ def main():
     token = get_user_token(username, scope, credentials_dict)
     unparsed_song_info_json = get_current_song_info_json(token)
     parsed_json = parse_current_song_json(unparsed_song_info_json)
-    print "Parsed JSON: ", parsed_json
+    print("Parsed JSON: ", parsed_json)
 
 
 if __name__ == "__main__":
