@@ -72,7 +72,8 @@ def test():
         if checkArtistsMatch(artist, hit["result"]):
             print("Found matching result")
             print("Matching song name: ", hit["result"]["title"])
-            print("Path to matching song lyrics: ", hit["result"]["path"])
+            song_path = extractSongPathFromGeniusSearchResult(hit["result"])
+            print("Path to matching song lyrics: ", song_path)
 
 
 if __name__ == "__main__":
