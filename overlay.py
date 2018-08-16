@@ -90,49 +90,7 @@ def getInitialPositionCoordinates(app):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     initial_coords_and_dimens = getInitialPositionCoordinates(app)
-    temp_lyrics = "\t\t\tLyrics go here\n\
-                    hello my name is josh\n\
-                    yesterday i went to the gym\n\
-                    jason is raging about demon souls\n\
-                    i am trying to make some text\n\
-                    that resembles lyrics\n\
-                    and see how it shows up in the window\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf\n\
-                    blah blach blacgh blasdkfj dfjdjf"
+    temp_lyrics = "Lyrics go here\n\
+                   blah blach blacgh blasdkfj dfjdjf"
     lyrics_overlay = LyricsOverlay(temp_lyrics)
     sys.exit(app.exec_())
