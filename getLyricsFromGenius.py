@@ -3,14 +3,20 @@
 # 3. Follow song path to Genius wepage, extract lyrics from 'lyrics' div w/ BS4
 
 
+import pickle
 import requests
 from bs4 import BeautifulSoup
 
 import sys
 
 
-def getGeniusAPIClientAccessToken():
-    return "k5CSZxHK2TzAVzU17gC346jF1KKqAR3hha-O8qEgODSKnskgWUwdYjRIwOMWVIAS"
+def loadCredentials():
+    # return "k5CSZxHK2TzAVzU17gC346jF1KKqAR3hha-O8qEgODSKnskgWUwdYjRIwOMWVIAS"
+    try:
+        with open('credentials.p', 'rb') as c:
+            return pickle.load(c)
+    except IOError:
+        print("Error: Couldn't open credentials file. Exiting")
 
 
 def getGeniusAPIBaseURL():
@@ -37,7 +43,8 @@ def createFullSearchGETRequestURL(song_title, song_artist):
 
 
 def prepareGETRequestHeaders():
-    access_token = getGeniusAPIClientAccessToken()
+    credentials = loadCredentials()
+    access_token = credentials["GENIUS_API_CLIENT_TOKEN"]
     headers = {"Authorization": "Bearer " + access_token}
     return headers
 
