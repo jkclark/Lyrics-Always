@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (QWidget,
                              QLabel,
                              QScrollArea,
                              )
+from PyQt5 import QtGui, QtCore
 
 
 class LyricsOverlay(QWidget):
@@ -19,6 +20,8 @@ class LyricsOverlay(QWidget):
 
         self.lyrics = lyrics
 
+        # this keeps the window on top (I don't know of any side effects yet)
+        QtGui.QWindow.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
         self.initializeUI()
 
     def initializeUI(self):
@@ -36,7 +39,7 @@ class LyricsOverlay(QWidget):
         self.setGeometry(init_x, init_y, init_w, init_h)
         self.setLayout(main_vertical_box)
         self.setWindowTitle('Lyrics Always')
-        self.show()
+        #  self.show()
 
     def assembleSongInfoBox(self):
         song_info_box = QVBoxLayout()
@@ -93,4 +96,5 @@ if __name__ == '__main__':
     temp_lyrics = "Lyrics go here\n\
                    blah blach blacgh blasdkfj dfjdjf"
     lyrics_overlay = LyricsOverlay(temp_lyrics)
+    lyrics_overlay.show()
     sys.exit(app.exec_())
