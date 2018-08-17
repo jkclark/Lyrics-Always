@@ -11,7 +11,6 @@ import sys
 
 
 def loadCredentials():
-    # return "k5CSZxHK2TzAVzU17gC346jF1KKqAR3hha-O8qEgODSKnskgWUwdYjRIwOMWVIAS"
     try:
         with open('credentials.p', 'rb') as c:
             return pickle.load(c)
