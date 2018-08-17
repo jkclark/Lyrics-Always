@@ -43,17 +43,26 @@ def get_user_token(username, scope, credentials_dict):
     return token
 
 
-def get_current_song_info_json(token):
+def get_current_playback_info_json(token):
     sp = spotipy.Spotify(auth=token)
     #  results = sp.current_user_playing_track()
     results = sp.current_playback()
     return results
 
 
-def parse_current_song_json(unparsed_json):
+def load_json_into_object(unparsed_json):
     json_string = json.dumps(unparsed_json)
-    parsed_json = json.loads(json_string)
-    return parsed_json
+    json_obj = json.loads(json_string)
+    return json_obj
+
+
+def getSongTitleFromPlaybackObj(playback_obj):
+    return playback_obj["item"]["name"]
+
+
+def getSongArtistFromPlaybackObj(playback_obj):
+    primary_artist = playback_obj["item"]["artists"][0]
+    return primary_artist["name"]
 
 
 def main():
@@ -64,9 +73,12 @@ def main():
     credentials_pickle_file = "credentials.p"
     credentials_dict = load_credentials(credentials_pickle_file)
     token = get_user_token(username, scope, credentials_dict)
-    unparsed_song_info_json = get_current_song_info_json(token)
-    parsed_json = parse_current_song_json(unparsed_song_info_json)
-    print("Parsed JSON: ", parsed_json)
+    unparsed_playback_info_json = get_current_playback_info_json(token)
+    current_playback_obj = load_json_into_object(unparsed_playback_info_json)
+    song_title = getSongTitleFromPlaybackObj(current_playback_obj)
+    print("current song title:", song_title)
+    song_artist = getSongArtistFromPlaybackObj(current_playback_obj)
+    print("current song artist:", song_artist)
 
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
 .cache*
 credentials.p
 gameplan.txt
+__pycache__*
