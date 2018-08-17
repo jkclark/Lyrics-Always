@@ -4,6 +4,7 @@
 
 
 import requests
+from bs4 import BeautifulSoup
 
 import sys
 
@@ -12,8 +13,14 @@ def getGeniusAPIClientAccessToken():
     return "k5CSZxHK2TzAVzU17gC346jF1KKqAR3hha-O8qEgODSKnskgWUwdYjRIwOMWVIAS"
 
 
-def getGeniusBaseURL():
+def getGeniusAPIBaseURL():
     return "http://api.genius.com"
+
+
+# meta: "meta" object from Genius API response
+def getResponseStatus(response):
+    status = response["meta"]["status"]
+    return status
 
 
 def createSongByArtistSearchTerm(song_title, song_artist):
@@ -21,23 +28,27 @@ def createSongByArtistSearchTerm(song_title, song_artist):
     return search_term
 
 
-# meta: "meta" object from Genius API response
-def checkResponseStatus(meta):
-    status = meta["status"]
-    return status
+def createFullSearchGETRequestURL(song_title, song_artist):
+    base_url = getGeniusAPIBaseURL()
+    search = "/search?q="
+    search_term = createSongByArtistSearchTerm(song_title, song_artist)
+    full_url = base_url + search + search_term
+    return full_url
+
+
+def prepareGETRequestHeaders():
+    access_token = getGeniusAPIClientAccessToken()
+    headers = {"Authorization": "Bearer " + access_token}
+    return headers
 
 
 def searchGeniusBySongTitleAndArtist(song_title, song_artist):
-    # prepare GET request params
-    access_token = getGeniusAPIClientAccessToken()
-    headers = {"Authorization": "Bearer " + access_token}
-    base_url = getGeniusBaseURL()
-    search_url = base_url + "/search"
-    search_term = createSongByArtistSearchTerm(song_title, song_artist)
-    full_url = search_url + "?q=" + search_term
+    # GET request params
+    search_url = createFullSearchGETRequestURL(song_title, song_artist)
+    headers = prepareGETRequestHeaders()
 
-    # GET request
-    response = requests.get(full_url, headers=headers)
+    # actual GET request
+    response = requests.get(search_url, headers=headers)
     response_json = response.json()
     return response_json
 
@@ -58,22 +69,49 @@ def extractSongPathFromGeniusSearchResult(search_result):
     return search_result["path"]
 
 
+def getGeniusWebsiteBaseURL():
+    return "https://genius.com"
+
+
+def getLyricsPageHTMLFromPath(song_path):
+    lyrics_url = getGeniusWebsiteBaseURL() + song_path
+    page_html = requests.get(lyrics_url)
+    return page_html
+
+
+def parseLyricsPageHTML(html):
+    html_text = BeautifulSoup(html.text, "html.parser")
+    #  [h.extract() for h in lyrics_html('script')]
+    lyrics = html_text.find("div", class_="lyrics").get_text()
+    return lyrics
+
+
 def test():
     print("Starting test")
     song = sys.argv[1]
     artist = sys.argv[2]
     #  song = "oops"
     #  artist = "Britney Spears"
-    print("Searching for", song, " by ", artist)
+    print("Searching for", song, "by", artist)
     response_json = searchGeniusBySongTitleAndArtist(song, artist)
+    status = getResponseStatus(response_json)
+    if status != 200:
+        print("Error: GET returned", status)
+        print("Exiting.")
+        sys.exit()
     print("Response JSON:")
     print(response_json)
+    song_path = ""
     for hit in response_json["response"]["hits"]:
         if checkArtistsMatch(artist, hit["result"]):
             print("Found matching result")
             print("Matching song name: ", hit["result"]["title"])
             song_path = extractSongPathFromGeniusSearchResult(hit["result"])
             print("Path to matching song lyrics: ", song_path)
+            break
+    lyrics_page_html = getLyricsPageHTMLFromPath(song_path)
+    lyrics = parseLyricsPageHTML(lyrics_page_html)
+    print("lyrics: ", lyrics)
 
 
 if __name__ == "__main__":
