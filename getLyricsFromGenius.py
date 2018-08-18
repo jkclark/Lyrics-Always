@@ -10,9 +10,9 @@ from bs4 import BeautifulSoup
 import sys
 
 
-def loadCredentials():
+def loadCredentials(credentials_pickle_file):
     try:
-        with open('credentials.p', 'rb') as c:
+        with open(credentials_pickle_file, 'rb') as c:
             return pickle.load(c)
     except IOError:
         print("Error: Couldn't open credentials file. Exiting")
@@ -42,7 +42,7 @@ def createFullSearchGETRequestURL(song_title, song_artist):
 
 
 def prepareGETRequestHeaders():
-    credentials = loadCredentials()
+    credentials = loadCredentials("credentials.p")
     access_token = credentials["GENIUS_API_CLIENT_TOKEN"]
     headers = {"Authorization": "Bearer " + access_token}
     return headers
