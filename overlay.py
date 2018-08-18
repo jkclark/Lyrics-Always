@@ -35,8 +35,8 @@ class LyricsOverlay(QWidget):
         main_vertical_box.addLayout(lyrics_box)
         main_vertical_box.addLayout(update_button_box)
 
-        init_x, init_y, init_w, init_h = initial_coords_and_dimens
-        self.setGeometry(init_x, init_y, init_w, init_h)
+        #  init_x, init_y, init_w, init_h = initial_coords_and_dimens
+        #  self.setGeometry(init_x, init_y, init_w, init_h)
         self.setLayout(main_vertical_box)
         self.setWindowTitle('Lyrics Always')
         #  self.show()
