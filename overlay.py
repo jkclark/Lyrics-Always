@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+#  import PyQt5.QtWidgets  # was used to redraw GUI (well attempted anyway)
 from PyQt5.QtWidgets import (QWidget,
                              QPushButton,
                              #  QHBoxLayout,
@@ -19,6 +20,7 @@ class LyricsOverlay(QWidget):
         super().__init__()
 
         self.lyrics = lyrics
+        self.lyrics_label = self.createLyricsLabel()
 
         # this keeps the window on top (I don't know of any side effects yet)
         QtGui.QWindow.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
@@ -46,8 +48,8 @@ class LyricsOverlay(QWidget):
         return song_info_box
 
     def assembleLyricsBox(self):
-        lyrics_label = self.createLyricsLabel()
-        scrolling_lyrics = self.assembleScrollingLyricsWidget(lyrics_label)
+        #  lyrics_label = self.createLyricsLabel()
+        scrolling_lyrics = self.assembleScrollingLyricsWidget(self.lyrics_label)
 
         lyrics_vertical_box = QVBoxLayout()
         lyrics_vertical_box.addWidget(scrolling_lyrics)
@@ -76,8 +78,17 @@ class LyricsOverlay(QWidget):
         return update_button_box
 
     def createUpdateButton(self):
-        update_button = QPushButton("Update")
+        update_button = QPushButton("Update", self)
+        update_button.setToolTip("Show lyrics for current song")
+        update_button.clicked.connect(self.onUpdateButtonClick)
         return update_button
+
+    def onUpdateButtonClick(self):
+        #  self.lyrics_label.setText("Here are some new lyrics!")
+        #  PyQt5.QtWidgets.qApp.processEvents()
+        self.lyrics = "Here are some new lyrics"
+        self.lyrics_label.setText(self.lyrics)
+        #  PyQt5.QtWidgets.qApp.processEvents()
 
 
 def getInitialPositionCoordinates(app):
