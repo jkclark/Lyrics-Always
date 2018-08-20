@@ -114,14 +114,6 @@ def test():
         sys.exit()
     print("Response JSON:")
     print(response_json)
-    #  song_path = ""
-    #  for hit in response_json["response"]["hits"]:
-        #  if checkArtistsMatch(artist, hit["result"]):
-            #  print("Found matching result")
-            #  print("Matching song name: ", hit["result"]["title"])
-            #  song_path = extractSongPathFromGeniusSearchResult(hit["result"])
-            #  print("Path to matching song lyrics: ", song_path)
-            #  break
     matching_hit = findMatchingHitInSearchResults(artist, response_json)
     song_path = extractSongPathFromGeniusSearchResult(matching_hit)
     lyrics_page_html = getLyricsPageHTMLFromPath(song_path)
