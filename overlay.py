@@ -43,6 +43,9 @@ class LyricsOverlay(QWidget):
         self.setWindowTitle('Lyrics Always')
         #  self.show()
 
+    def setLyrics(self, lyrics):
+        self.lyrics = lyrics
+
     def assembleSongInfoBox(self):
         song_info_box = QVBoxLayout()
         return song_info_box
