@@ -83,15 +83,11 @@ class LyricsOverlay(QWidget):
     def createUpdateButton(self):
         update_button = QPushButton("Update", self)
         update_button.setToolTip("Show lyrics for current song")
-        update_button.clicked.connect(self.onUpdateButtonClick)
+        update_button.clicked.connect(self.updateLyricsLabelText)
         return update_button
 
-    def onUpdateButtonClick(self):
-        #  self.lyrics_label.setText("Here are some new lyrics!")
-        #  PyQt5.QtWidgets.qApp.processEvents()
-        #  self.lyrics = "Here are some new lyrics"
+    def updateLyricsLabelText(self):
         self.lyrics_label.setText(self.lyrics)
-        #  PyQt5.QtWidgets.qApp.processEvents()
 
 
 def getInitialPositionCoordinates(app):
