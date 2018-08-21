@@ -21,6 +21,7 @@ class LyricsOverlay(QWidget):
 
         self.lyrics = lyrics
         self.lyrics_label = self.createLyricsLabel()
+        self.current_song = ""
 
         # this keeps the window on top (I don't know of any side effects yet)
         QtGui.QWindow.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
@@ -45,6 +46,12 @@ class LyricsOverlay(QWidget):
 
     def setLyrics(self, lyrics):
         self.lyrics = lyrics
+
+    def getCurrentSong(self):
+        return self.current_song
+
+    def setCurrentSong(self, new_song):
+        self.current_song = new_song
 
     def assembleSongInfoBox(self):
         song_info_box = QVBoxLayout()
