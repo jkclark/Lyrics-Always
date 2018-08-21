@@ -89,7 +89,7 @@ class LyricsOverlay(QWidget):
     def onUpdateButtonClick(self):
         #  self.lyrics_label.setText("Here are some new lyrics!")
         #  PyQt5.QtWidgets.qApp.processEvents()
-        self.lyrics = "Here are some new lyrics"
+        #  self.lyrics = "Here are some new lyrics"
         self.lyrics_label.setText(self.lyrics)
         #  PyQt5.QtWidgets.qApp.processEvents()
 
