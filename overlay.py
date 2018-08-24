@@ -50,6 +50,11 @@ class LyricsOverlay(QWidget):
     def getCurrentSong(self):
         return self.current_song
 
+    def didSongChange(self, new_song):
+        if self.current_song == new_song:
+            return False
+        return True
+
     def setCurrentSong(self, new_song):
         self.current_song = new_song
 

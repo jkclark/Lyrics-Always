@@ -110,7 +110,8 @@ def main():
     app = QApplication(sys.argv)
     initial_coords_and_dimens = getInitialPositionCoordinates(app)
     x, y, w, h = initial_coords_and_dimens
-    lyrics_overlay = overlay.LyricsOverlay(lyrics) lyrics_overlay.setGeometry(x, y, w, h)
+    lyrics_overlay = overlay.LyricsOverlay(lyrics)
+    lyrics_overlay.setGeometry(x, y, w, h)
     push_button_child = lyrics_overlay.findChild(QPushButton)
     print("PBC", push_button_child)
     push_button_child.clicked.connect(lambda: changeLyrics(lyrics_overlay, user))
