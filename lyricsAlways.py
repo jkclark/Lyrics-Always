@@ -82,16 +82,24 @@ def getLyricsForSong(song_title, song_artist):
     return lyrics
 
 
-def update(user):
+def fetchSongAndGetLyrics(user):
     title, artist = getSongFromSpotify(user)
     lyrics = getLyricsForSong(title, artist)
     return lyrics
 
 
-def changeLyrics(button, user):
-    lyrics = update(user)
-    button.setLyrics(lyrics)
-    button.updateLyricsLabelText()
+def changeLyrics(app, user):
+    lyrics = fetchSongAndGetLyrics(user)
+    app.setLyrics(lyrics)
+    app.updateLyricsLabelText()
+
+
+def update(user, app):
+    print("main updater function started")
+    title, artist = getSongFromSpotify(user)
+    lyrics = getLyricsForSong(title, artist)
+    app.setLyrics(lyrics)
+    app.updateLyricsLabelText()
 
 
 def main():
@@ -104,17 +112,19 @@ def main():
     user = User(username, scope, credentials_dict)
     #  token = spotify.get_user_token(username, scope, credentials_dict)
 
-    lyrics = update(user)
+    lyrics = fetchSongAndGetLyrics(user)
 
     # make app with lyrics
     app = QApplication(sys.argv)
     initial_coords_and_dimens = getInitialPositionCoordinates(app)
     x, y, w, h = initial_coords_and_dimens
+
     lyrics_overlay = overlay.LyricsOverlay(lyrics)
     lyrics_overlay.setGeometry(x, y, w, h)
+
     push_button_child = lyrics_overlay.findChild(QPushButton)
     print("PBC", push_button_child)
-    push_button_child.clicked.connect(lambda: changeLyrics(lyrics_overlay, user))
+    push_button_child.clicked.connect(lambda: update(user, lyrics_overlay))
 
     # change color of entire window
     #  p = lyrics_overlay.palette()
