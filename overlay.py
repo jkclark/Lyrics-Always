@@ -25,6 +25,7 @@ class LyricsOverlay(QWidget):
 
         # this keeps the window on top (I don't know of any side effects yet)
         QtGui.QWindow.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
+        #  QtGui.QWindow.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint)
         self.initializeUI()
 
     def initializeUI(self):
