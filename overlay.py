@@ -77,14 +77,21 @@ class LyricsOverlay(QWidget):
         widget = QWidget()  # can change this later to be more specific widget
         widget_vert_layout = QVBoxLayout()
         lyrics_scroll_area = QScrollArea()
+        lyrics_scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 
         widget_vert_layout.addWidget(lyrics_label)
         widget.setLayout(widget_vert_layout)
         lyrics_scroll_area.setWidget(widget)
+        #  lyrics_scroll_area.setWidget(lyrics_label)
+
+        #  widget.setMinimumWidth(lyrics_scroll_area.width())
+        #  widget.setMaximumWidth(200)
+
         return lyrics_scroll_area
 
     def createLyricsLabel(self):
         lyrics_label = QLabel(self.lyrics)
+        lyrics_label.setWordWrap(True)  # wrap text
         return lyrics_label
 
     def assembleUpdateButtonBox(self):
