@@ -23,6 +23,6 @@ That's all there is to it.
 Interacting with the Spotify API is done partly with [Spotipy](https://github.com/plamere/spotipy).
 
 ## Usage
-You can run Lyrics Always by navigating to it's directory and running `python3 lyrics.py`\<your\_username\>
+You can run Lyrics Always by navigating to it's directory and running `python3 lyrics.py \<your\_username\>`
 
 Enjoy!
