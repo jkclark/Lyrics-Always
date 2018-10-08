@@ -10,8 +10,16 @@ from PyQt5.QtWidgets import (QWidget,
                              QApplication,
                              QLabel,
                              QScrollArea,
+                             QSizePolicy,
                              )
 from PyQt5 import QtGui, QtCore
+
+
+class LyricsLabel(QLabel):
+
+    def __init__(self, lyrics):
+        QLabel.__init__(self, lyrics)
+        print("Created subclassed label")
 
 
 class LyricsOverlay(QWidget):
@@ -21,6 +29,7 @@ class LyricsOverlay(QWidget):
 
         self.lyrics = lyrics
         self.lyrics_label = self.createLyricsLabel()
+        self.lyrics_label.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.current_song = ""
 
         # this keeps the window on top (I don't know of any side effects yet)
@@ -90,7 +99,7 @@ class LyricsOverlay(QWidget):
         return lyrics_scroll_area
 
     def createLyricsLabel(self):
-        lyrics_label = QLabel(self.lyrics)
+        lyrics_label = LyricsLabel(self.lyrics)
         lyrics_label.setWordWrap(True)  # wrap text
         return lyrics_label
 
@@ -107,6 +116,9 @@ class LyricsOverlay(QWidget):
         return update_button
 
     def updateLyricsLabelText(self):
+        print("Label size before update:\t")
+        print("Width: %d\t" % self.lyrics_label.width())
+        print("Height: %d" % self.lyrics_label.height())
         self.lyrics_label.setText(self.lyrics)
 
 
