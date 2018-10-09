@@ -87,6 +87,7 @@ class LyricsOverlay(QWidget):
         widget_vert_layout = QVBoxLayout()
         lyrics_scroll_area = QScrollArea()
         lyrics_scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        lyrics_scroll_area.setWidgetResizable(True)  # fixes part of issue #9
 
         widget_vert_layout.addWidget(lyrics_label)
         widget.setLayout(widget_vert_layout)
