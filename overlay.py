@@ -19,22 +19,26 @@ class LyricsLabel(QLabel):
 
     def __init__(self, lyrics):
         QLabel.__init__(self, lyrics)
-        print("Created subclassed label")
 
 
 class LyricsOverlay(QWidget):
 
-    def __init__(self, lyrics):
+    def __init__(self, title, artist, lyrics):
         super().__init__()
 
+        self.title = title
+        self.artist = artist
         self.lyrics = lyrics
         self.lyrics_label = self.createLyricsLabel()
-        self.lyrics_label.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        self.current_song = ""
+
+        # The line below makes the label stay as wide as the longest line
+        # (i.e., text does not wrap)
+        #  self.lyrics_label.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+
+        self.current_song = self.createFullSongName(title, artist)
 
         # this keeps the window on top (I don't know of any side effects yet)
         QtGui.QWindow.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
-        #  QtGui.QWindow.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint)
         self.initializeUI()
 
     def initializeUI(self):
@@ -57,16 +61,20 @@ class LyricsOverlay(QWidget):
     def setLyrics(self, lyrics):
         self.lyrics = lyrics
 
+    def createFullSongName(self, title, artist):
+        return title + " by " + artist
+
     def getCurrentSong(self):
         return self.current_song
 
-    def didSongChange(self, new_song):
+    def didSongChange(self, new_title, new_artist):
+        new_song = self.createFullSongName(new_title, new_artist)
         if self.current_song == new_song:
             return False
         return True
 
-    def setCurrentSong(self, new_song):
-        self.current_song = new_song
+    def setCurrentSong(self, new_title, new_artist):
+        self.current_song = self.createFullSongName(new_title, new_artist)
 
     def assembleSongInfoBox(self):
         song_info_box = QVBoxLayout()
@@ -117,9 +125,6 @@ class LyricsOverlay(QWidget):
         return update_button
 
     def updateLyricsLabelText(self):
-        print("Label size before update:\t")
-        print("Width: %d\t" % self.lyrics_label.width())
-        print("Height: %d" % self.lyrics_label.height())
         self.lyrics_label.setText(self.lyrics)
 
 

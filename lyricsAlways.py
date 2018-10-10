@@ -87,24 +87,14 @@ def getLyricsForSong(song_title, song_artist):
     return lyrics
 
 
-def fetchSongAndGetLyrics(user):
-    title, artist = getSongFromSpotify(user)
-    lyrics = getLyricsForSong(title, artist)
-    return lyrics
-
-
-def changeLyrics(app, user):
-    lyrics = fetchSongAndGetLyrics(user)
-    app.setLyrics(lyrics)
-    app.updateLyricsLabelText()
-
-
 def update(user, app):
-    print("main updater function started")
     title, artist = getSongFromSpotify(user)
-    lyrics = getLyricsForSong(title, artist)
-    app.setLyrics(lyrics)
-    app.updateLyricsLabelText()
+    if app.didSongChange(title, artist):
+        app.setCurrentSong(title, artist)
+        lyrics = getLyricsForSong(title, artist)
+        app.setLyrics(lyrics)
+        app.updateLyricsLabelText()
+        print("Song updated: ", app.getCurrentSong())
 
 
 def main():
@@ -117,14 +107,15 @@ def main():
     user = User(username, scope, credentials_dict)
     #  token = spotify.get_user_token(username, scope, credentials_dict)
 
-    lyrics = fetchSongAndGetLyrics(user)
+    title, artist = getSongFromSpotify(user)
+    lyrics = getLyricsForSong(title, artist)
 
     # make app with lyrics
     app = QApplication(sys.argv)
     initial_coords_and_dimens = getInitialPositionCoordinates(app)
     x, y, w, h = initial_coords_and_dimens
 
-    lyrics_overlay = overlay.LyricsOverlay(lyrics)
+    lyrics_overlay = overlay.LyricsOverlay(title, artist, lyrics)
     lyrics_overlay.setGeometry(x, y, w, h)
 
     push_button_child = lyrics_overlay.findChild(QPushButton)
