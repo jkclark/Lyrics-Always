@@ -74,8 +74,13 @@ def getLyricsForSong(song_title, song_artist):
     if status != 200:
         print("Failed to get lyrics. Search returned %d status" % status)
         return ""
+
     matching_hit = genius.findMatchingHitInSearchResults(song_artist,
                                                          response_json)
+    if matching_hit is None:  # Can't find a song page for this song
+        no_lyrics_text = "Cannot find lyrics for current song."
+        return no_lyrics_text
+
     song_path = genius.extractSongPathFromGeniusSearchResult(matching_hit)
     lyrics_page_html = genius.getLyricsPageHTMLFromPath(song_path)
     lyrics = genius.parseLyricsPageHTML(lyrics_page_html)
