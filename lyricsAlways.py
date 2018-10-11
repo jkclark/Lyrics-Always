@@ -68,15 +68,23 @@ def getSongFromSpotify(user):
 
 
 def getLyricsForSong(song_title, song_artist):
-    response_json = genius.searchGeniusBySongTitleAndArtist(song_title,
-                                                            song_artist)
-    status = checkResponseStatus(response_json)
-    if status != 200:
-        print("Failed to get lyrics. Search returned %d status" % status)
-        return ""
+    search_urls = genius.createSearchGETRequestURLs(song_title, song_artist)
+    matching_hit = None
+    for url in search_urls:
+        response_json = genius.searchGenius(url)
+        status = checkResponseStatus(response_json)
+        if status != 200:
+            error_message = "Failed to get lyrics. Search returned status {}."
+            error_message = error_message.format(status)
+            return error_message
 
-    matching_hit = genius.findMatchingHitInSearchResults(song_artist,
-                                                         response_json)
+        matching_hit = genius.findMatchingHitInSearchResults(song_artist,
+                                                             response_json)
+
+        if matching_hit is not None:
+            print("Successful URL: ", url)
+            break
+
     if matching_hit is None:  # Can't find a song page for this song
         no_lyrics_text = "Cannot find lyrics for current song."
         return no_lyrics_text
