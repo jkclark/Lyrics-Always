@@ -7,8 +7,6 @@ import pickle
 import requests
 from bs4 import BeautifulSoup
 
-import sys
-
 
 def loadCredentials(credentials_pickle_file):
     try:
@@ -28,15 +26,16 @@ def getResponseStatus(response):
     return status
 
 
-def createSongByArtistSearchTerm(song_title, song_artist):
+def createArtistSongSearchTerm(song_title, song_artist):
     search_term = song_title + " by " + song_artist
+    #  search_term = song_artist + " " + song_title
     return search_term
 
 
 def createFullSearchGETRequestURL(song_title, song_artist):
     base_url = getGeniusAPIBaseURL()
     search = "/search?q="
-    search_term = createSongByArtistSearchTerm(song_title, song_artist)
+    search_term = createArtistSongSearchTerm(song_title, song_artist)
     full_url = base_url + search + search_term
     return full_url
 
@@ -97,29 +96,3 @@ def parseLyricsPageHTML(html):
     #  [h.extract() for h in lyrics_html('script')]
     lyrics = html_text.find("div", class_="lyrics").get_text()
     return lyrics
-
-
-def test():
-    print("Starting test")
-    song = sys.argv[1]
-    artist = sys.argv[2]
-    #  song = "oops"
-    #  artist = "Britney Spears"
-    print("Searching for", song, "by", artist)
-    response_json = searchGeniusBySongTitleAndArtist(song, artist)
-    status = getResponseStatus(response_json)
-    if status != 200:
-        print("Error: GET returned", status)
-        print("Exiting.")
-        sys.exit()
-    print("Response JSON:")
-    print(response_json)
-    matching_hit = findMatchingHitInSearchResults(artist, response_json)
-    song_path = extractSongPathFromGeniusSearchResult(matching_hit)
-    lyrics_page_html = getLyricsPageHTMLFromPath(song_path)
-    lyrics = parseLyricsPageHTML(lyrics_page_html)
-    print("lyrics: ", lyrics)
-
-
-if __name__ == "__main__":
-    test()

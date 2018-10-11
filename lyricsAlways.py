@@ -93,7 +93,6 @@ def update(user, app):
         app.setCurrentSong(title, artist)
         lyrics = getLyricsForSong(title, artist)
         app.setLyrics(lyrics)
-        app.updateLyricsLabelText()
         print("Song updated: ", app.getCurrentSong())
 
 

@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (QWidget,
                              QApplication,
                              QLabel,
                              QScrollArea,
-                             QSizePolicy,
+                             #  QSizePolicy,
                              )
 from PyQt5 import QtGui, QtCore
 
@@ -28,14 +28,15 @@ class LyricsOverlay(QWidget):
 
         self.title = title
         self.artist = artist
+        self.current_song = self.createFullSongName(title, artist)
+        self.song_label = self.createSongLabel()
+
         self.lyrics = lyrics
         self.lyrics_label = self.createLyricsLabel()
 
         # The line below makes the label stay as wide as the longest line
         # (i.e., text does not wrap)
         #  self.lyrics_label.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-
-        self.current_song = self.createFullSongName(title, artist)
 
         # this keeps the window on top (I don't know of any side effects yet)
         QtGui.QWindow.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
@@ -59,10 +60,13 @@ class LyricsOverlay(QWidget):
         #  self.show()
 
     def setLyrics(self, lyrics):
+        """ Set lyrics and update lyrics label """
         self.lyrics = lyrics
+        self.lyrics_label.setText(self.lyrics)
 
     def createFullSongName(self, title, artist):
-        return title + " by " + artist
+        #  return title + " - " + artist
+        return artist + " - " + title
 
     def getCurrentSong(self):
         return self.current_song
@@ -74,11 +78,23 @@ class LyricsOverlay(QWidget):
         return True
 
     def setCurrentSong(self, new_title, new_artist):
+        """ Set current_song and update song label """
         self.current_song = self.createFullSongName(new_title, new_artist)
+        self.song_label.setText(self.current_song)
 
+    # UI Components #
     def assembleSongInfoBox(self):
         song_info_box = QVBoxLayout()
+        song_info_box.addWidget(self.song_label)
         return song_info_box
+
+    def createSongLabel(self):
+        song_label = QLabel(self.current_song)
+        song_label.setWordWrap(True)
+        return song_label
+
+    def updateSongLabel(self):
+        self.song_label.setText(self.current_song)
 
     def assembleLyricsBox(self):
         #  lyrics_label = self.createLyricsLabel()
@@ -109,7 +125,7 @@ class LyricsOverlay(QWidget):
 
     def createLyricsLabel(self):
         lyrics_label = LyricsLabel(self.lyrics)
-        lyrics_label.setWordWrap(True)  # wrap text
+        lyrics_label.setWordWrap(True)
         return lyrics_label
 
     def assembleUpdateButtonBox(self):
@@ -121,11 +137,7 @@ class LyricsOverlay(QWidget):
     def createUpdateButton(self):
         update_button = QPushButton("Update", self)
         update_button.setToolTip("Show lyrics for current song")
-        update_button.clicked.connect(self.updateLyricsLabelText)
         return update_button
-
-    def updateLyricsLabelText(self):
-        self.lyrics_label.setText(self.lyrics)
 
 
 def getInitialPositionCoordinates(app):
