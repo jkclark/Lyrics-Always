@@ -93,16 +93,18 @@ def getLyricsForSong(song_title, song_artist):
     song_path = genius.extractSongPathFromGeniusSearchResult(matching_hit)
     lyrics_page_html = genius.getLyricsPageHTMLFromPath(song_path)
     lyrics = genius.parseLyricsPageHTML(lyrics_page_html)
+    lyrics = lyrics.strip()  # Remove beginning and ending newlines
     return lyrics
 
 
-def update(user, app):
+def update(user, la, app):
     title, artist = getSongFromSpotify(user)
-    if app.didSongChange(title, artist):
-        app.setCurrentSong(title, artist)
+    if la.didSongChange(title, artist):
+        la.setCurrentSong(title, artist)
         lyrics = getLyricsForSong(title, artist)
-        app.setLyrics(lyrics)
-        print("Song updated: ", app.getCurrentSong())
+        la.setLyrics(lyrics)
+        print("Song updated: ", la.getCurrentSong())
+        app.processEvents()
 
 
 def main():
@@ -127,8 +129,9 @@ def main():
     lyrics_overlay.setGeometry(x, y, w, h)
 
     push_button_child = lyrics_overlay.findChild(QPushButton)
-    print("PBC", push_button_child)
-    push_button_child.clicked.connect(lambda: update(user, lyrics_overlay))
+    push_button_child.clicked.connect(lambda: update(user,
+                                                     lyrics_overlay,
+                                                     app))
 
     # change color of entire window
     #  p = lyrics_overlay.palette()
