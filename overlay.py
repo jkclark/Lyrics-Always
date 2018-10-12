@@ -33,6 +33,7 @@ class LyricsOverlay(QWidget):
 
         self.lyrics = lyrics
         self.lyrics_label = self.createLyricsLabel()
+        self.lyrics_scroll_area = None  # gets set during initializeUI()
 
         # The line below makes the label stay as wide as the longest line
         # (i.e., text does not wrap)
@@ -116,11 +117,8 @@ class LyricsOverlay(QWidget):
         widget_vert_layout.addWidget(lyrics_label)
         widget.setLayout(widget_vert_layout)
         lyrics_scroll_area.setWidget(widget)
-        #  lyrics_scroll_area.setWidget(lyrics_label)
 
-        #  widget.setMinimumWidth(lyrics_scroll_area.width())
-        #  widget.setMaximumWidth(200)
-
+        self.lyrics_scroll_area = lyrics_scroll_area
         return lyrics_scroll_area
 
     def createLyricsLabel(self):
@@ -138,6 +136,9 @@ class LyricsOverlay(QWidget):
         update_button = QPushButton("Update", self)
         update_button.setToolTip("Show lyrics for current song")
         return update_button
+
+    def _scrollToTop(self):
+        self.lyrics_scroll_area.verticalScrollBar().setValue(0)
 
 
 def getInitialPositionCoordinates(app):

@@ -105,6 +105,7 @@ def update(user, la, app):
         la.setLyrics(lyrics)
         print("Song updated: ", la.getCurrentSong())
         app.processEvents()
+        la._scrollToTop()
 
 
 def main():
