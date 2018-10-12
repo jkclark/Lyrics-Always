@@ -51,7 +51,7 @@ def createSearchGETRequestURLs(song_title, song_artist):
     search_terms.append(song_title + " by " + song_artist)
 
     search_term_base = song_artist + " - "
-    search_terms.append(search_term_base + song_title)  # Format #2
+    search_terms.append(search_term_base + song_title)  # Variant #2
 
     # Variant #3
     if "-" in song_title:
@@ -85,8 +85,7 @@ def searchGenius(search_url):
     with a matching artist.
 
     Parameters:
-        song_title: Title of song
-        song_artist: Artist of song
+        search_url: URL to GET
 
     Returns:
         response_json: JSON object containing info about target song
@@ -100,16 +99,37 @@ def searchGenius(search_url):
     return response_json
 
 
+def checkTitlesMatch(song_title, search_result):
+    result_title = search_result["title"]
+
+    # Let's not let capitalization fool us
+    result_lower = result_title.lower()
+    song_lower = song_title.lower()
+
+    # Remove any '()' and anything inbetween
+    song_minus_parens = re.sub("\ \(.*\)", "", song_lower)
+    result_minus_parens = re.sub("\ \(.*\)", "", result_lower)
+
+    if song_minus_parens == result_minus_parens:
+        return True
+    return False
+
+
 def checkArtistsMatch(song_artist, search_result):
     result_artist = search_result["primary_artist"]["name"]
 
-    # "Zedd & Liam Payne" was the listed primary artist for "Get Low",
+    # "Zedd & Liam Payne" was the listed primary artist or "Get Low",
     # so I changed this from "==" to "in" (to make "Zedd" as the Spotify artst
     # satisfy the condition). This might actually be worse in the long run, but
     # for now it seems to be a good fix.
 
-    #  if artist_name == result_artist:
-    if song_artist in result_artist:
+    # Let's not let capitalization fool us
+    result_lower = result_artist.lower()
+    song_lower = song_artist.lower()
+
+    # Remove any '&' and anything afterwards
+    song_minus_amp = re.sub("\&.*", "", song_lower)
+    if song_minus_amp in result_lower:
         return True
     return False
 
@@ -120,12 +140,13 @@ def extractSongPathFromGeniusSearchResult(search_result):
     return search_result["path"]
 
 
-def findMatchingHitInSearchResults(song_artist, search_results):
+def findMatchingHitInSearchResults(song_title, song_artist, search_results):
     """
     Looks for a hit in search_results with a primary artist that matches
     artist.
 
     Parameters:
+        song_title: title to match
         song_artist: artist to match
         search_results: JSON object with list of hits
 
@@ -133,7 +154,9 @@ def findMatchingHitInSearchResults(song_artist, search_results):
         "result" field of matching hit in JSON object
     """
     for hit in search_results["response"]["hits"]:
-        if checkArtistsMatch(song_artist, hit["result"]):
+        artist_match = checkArtistsMatch(song_artist, hit["result"])
+        title_match = checkTitlesMatch(song_title, hit["result"])
+        if artist_match and title_match:
             return hit["result"]
     return None
 

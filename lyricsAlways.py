@@ -78,7 +78,8 @@ def getLyricsForSong(song_title, song_artist):
             error_message = error_message.format(status)
             return error_message
 
-        matching_hit = genius.findMatchingHitInSearchResults(song_artist,
+        matching_hit = genius.findMatchingHitInSearchResults(song_title,
+                                                             song_artist,
                                                              response_json)
 
         if matching_hit is not None:
