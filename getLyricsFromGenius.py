@@ -106,8 +106,11 @@ def checkTitlesMatch(song_title, search_result):
     result_lower = result_title.lower()
     song_lower = song_title.lower()
 
+    # Remove any ' - ' and anything aftwards
+    song_minus_hyphen = re.sub("\ -\ .*", "", song_lower)
+
     # Remove any '()' and anything inbetween
-    song_minus_parens = re.sub("\ \(.*\)", "", song_lower)
+    song_minus_parens = re.sub("\ \(.*\)", "", song_minus_hyphen)
     result_minus_parens = re.sub("\ \(.*\)", "", result_lower)
 
     if song_minus_parens == result_minus_parens:
