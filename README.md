@@ -1,7 +1,7 @@
 # Lyrics Always: Lyrics for Spotify
 
 ### Notice 10/6/18:
-I'm still in the process of updating Lyrics Always, so what is here now is less usable than before I started updating it. You'll have to do some tinkering and setup if you want to get it up and running on your machine.
+I'm still in the process of updating Lyrics Always, so what is here now is less usable than before I started updating it. You'll have to do some setup if you want to get it up and running on your machine.
 
 ---
 
