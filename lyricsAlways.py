@@ -7,6 +7,8 @@ from PyQt5.QtWidgets import (
         QPushButton,
         )
 #  from PyQt5.QtCore import Qt  # imported for color
+#  from PyQt5 import QtGui
+import qdarkstyle
 
 import sys
 
@@ -135,9 +137,7 @@ def main():
                                                      app))
 
     # change color of entire window
-    #  p = lyrics_overlay.palette()
-    #  p.setColor(lyrics_overlay.backgroundRole(), Qt.red)
-    #  lyrics_overlay.setPalette(p)
+    lyrics_overlay.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
     lyrics_overlay.show()
     sys.exit(app.exec_())

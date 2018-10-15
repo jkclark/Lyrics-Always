@@ -40,6 +40,7 @@ class LyricsOverlay(QWidget):
         #  self.lyrics_label.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
 
         # this keeps the window on top (I don't know of any side effects yet)
+        # use '|' to specify multiple flags
         QtGui.QWindow.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
         self.initializeUI()
 
