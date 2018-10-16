@@ -118,7 +118,6 @@ def main():
     credentials_pickle_file = "credentials.p"
     credentials_dict = spotify.load_credentials(credentials_pickle_file)
     user = User(username, scope, credentials_dict)
-    #  token = spotify.get_user_token(username, scope, credentials_dict)
 
     title, artist = getSongFromSpotify(user)
     lyrics = getLyricsForSong(title, artist)
