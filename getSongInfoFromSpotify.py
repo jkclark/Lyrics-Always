@@ -2,10 +2,13 @@ import sys
 import spotipy
 import spotipy.util as util
 import pickle
-import json
 
 
 def check_args():
+    """Make sure that the program is invoked correctly.
+
+    The program should be called by it's name, followed by a Spotify username.
+    """
     if len(sys.argv) != 2:
         print("Usage: %s username" % (sys.argv[0],))
         sys.exit(1)
@@ -16,11 +19,20 @@ def get_username():
 
 
 def get_scope():
-    #  return "user-read-currently-playing"
+    # user-read-playback-state gives access to user's currently playing track.
     return "user-read-playback-state"
 
 
 def load_credentials(credentials_pickle_file):
+    """Get the Spotify API credentials by loading a pickle file.
+
+    Args:
+        credentials_pickle_file (string): Path to pickle file containing creds.
+
+    Returns:
+        dict: dictionary containing API keys, redirect URI, etc.
+
+    """
     try:
         with open(credentials_pickle_file, 'rb') as c:
             return pickle.load(c)
@@ -30,6 +42,12 @@ def load_credentials(credentials_pickle_file):
 
 
 def get_user_token(username, scope, credentials_dict):
+    """Get a token to authorize Spotify API use for user.
+
+    Documenation for this Spotipy.util function is available here:
+    https://spotipy.readthedocs.io/en/latest/?highlight=prompt%20user%20token#
+    spotipy.util.prompt_for_user_token
+    """
     token = util.prompt_for_user_token(
             username,
             scope,
@@ -44,23 +62,29 @@ def get_user_token(username, scope, credentials_dict):
 
 
 def get_current_playback_info_json(token):
+    """Get unparsed playback information in JSON format, authorized by token.
+
+    Args:
+        token: Spotify token to authorize requests for user playback info.
+
+    Returns:
+        results (JSON object (dict)): JSON-format dictionary of playback info
+
+    """
     sp = spotipy.Spotify(auth=token)
     #  results = sp.current_user_playing_track()
     results = sp.current_playback()
+    print(f"Results: {results}")
     return results
 
 
-def load_json_into_object(unparsed_json):
-    json_string = json.dumps(unparsed_json)
-    json_obj = json.loads(json_string)
-    return json_obj
-
-
 def getSongTitleFromPlaybackObj(playback_obj):
+    """Return the name of the song (str) from the JSON dictionary."""
     return playback_obj["item"]["name"]
 
 
 def getSongArtistFromPlaybackObj(playback_obj):
+    """Return the artist of the song (str) from the JSON dictionary."""
     primary_artist = playback_obj["item"]["artists"][0]
     return primary_artist["name"]
 
@@ -74,10 +98,9 @@ def main():
     credentials_dict = load_credentials(credentials_pickle_file)
     token = get_user_token(username, scope, credentials_dict)
     unparsed_playback_info_json = get_current_playback_info_json(token)
-    current_playback_obj = load_json_into_object(unparsed_playback_info_json)
-    song_title = getSongTitleFromPlaybackObj(current_playback_obj)
+    song_title = getSongTitleFromPlaybackObj(unparsed_playback_info_json)
     print("current song title:", song_title)
-    song_artist = getSongArtistFromPlaybackObj(current_playback_obj)
+    song_artist = getSongArtistFromPlaybackObj(unparsed_playback_info_json)
     print("current song artist:", song_artist)
 
 

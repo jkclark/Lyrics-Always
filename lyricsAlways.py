@@ -2,10 +2,8 @@ import overlay
 import getSongInfoFromSpotify as spotify
 import getLyricsFromGenius as genius
 
-from PyQt5.QtWidgets import (
-        QApplication,
-        QPushButton,
-        )
+from PyQt5.QtWidgets import (QApplication,
+                             QPushButton)
 #  from PyQt5.QtCore import Qt  # imported for color
 #  from PyQt5 import QtGui
 import qdarkstyle
@@ -14,11 +12,21 @@ import sys
 
 
 class User():
+    """Object to keep track of Spotify API credentials, scope, and token.
+
+    Attributes:
+        username (str): Spotify username of user.
+        scope (str): The scope we have access to for the user.
+        credentials_dict (dict of str: str): API info (token, keys, etc).
+
+    """
+
     def __init__(self, username, scope, credentials_dict):
         self.username = username
         self.scope = scope
         self.credentials_dict = credentials_dict
 
+        #: str: access token for user
         self.token = self.requestToken()
 
     def getUsername(self):
@@ -31,6 +39,7 @@ class User():
         return self.credentials_dict
 
     def requestToken(self):
+        """Get a token to authorize Spotify API use for this user."""
         token = spotify.get_user_token(
                     self.username,
                     self.scope,
@@ -58,14 +67,20 @@ def checkResponseStatus(response_json):
 
 
 def getSongFromSpotify(user):
-    unparsed_playback_info_json = spotify.get_current_playback_info_json(
-            user.token
-    )
-    current_playback_obj = spotify.load_json_into_object(
-            unparsed_playback_info_json
-    )
-    song_title = spotify.getSongTitleFromPlaybackObj(current_playback_obj)
-    song_artist = spotify.getSongArtistFromPlaybackObj(current_playback_obj)
+    """Get information (title and artist) about currently playing Spotify song.
+
+    Args:
+        user (User): User object with information about Spotify credentials.
+
+    Returns:
+        song_title (str): The name of song currently playing on Spotify.
+        song_artist (str): The artist of song currently playing on Spotify.
+
+    """
+    playback_info_json = spotify.get_current_playback_info_json(user.token)
+
+    song_title = spotify.getSongTitleFromPlaybackObj(playback_info_json)
+    song_artist = spotify.getSongArtistFromPlaybackObj(playback_info_json)
     return song_title, song_artist
 
 
