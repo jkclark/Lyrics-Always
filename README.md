@@ -21,4 +21,3 @@ Interacting with the Spotify API is done partly with [Spotipy](https://github.co
 Right now, it'll take a bit of setup for you to use Lyrics Always. You need Spotify API information and Genius API information, which I haven't figured out how to build safely into
 the app yet without revealing anything sensitive.
 Once I have this figured out, I'll update this section to include instructions.
-Enjoy!
