@@ -111,6 +111,20 @@ def searchGenius(search_url):
 
 
 def checkTitlesMatch(song_title, search_result):
+    """Check to see if the current search result matches our song title.
+
+    Before checking, we also remove any parentheses (and text inside) and any
+    hyphens (and text following the hyphen).
+
+    Args:
+        song_title (str): The name of the song to be matched.
+        search_result (JSON-format dict): JSON object containing song info.
+
+    Returns:
+        True if search_result corresponds to a song whose title matches.
+        False otherwise.
+
+    """
     result_title = search_result["title"]
 
     # Let's not let capitalization fool us
@@ -130,6 +144,19 @@ def checkTitlesMatch(song_title, search_result):
 
 
 def checkArtistsMatch(song_artist, search_result):
+    """Check to see if the current search result matches our song artist.
+
+    Before checking, we also remove any ampersands and anything afterwards.
+
+    Args:
+        song_artist (str): The artist of the song to be matched.
+        search_result (JSON-format dict): JSON object containing song info.
+
+    Returns:
+        True if search_result corresponds to a song whose artist matches.
+        False otherwise.
+
+    """
     result_artist = search_result["primary_artist"]["name"]
 
     # "Zedd & Liam Payne" was the listed primary artist or "Get Low",
@@ -148,8 +175,6 @@ def checkArtistsMatch(song_artist, search_result):
     return False
 
 
-# search_result: "result" JSON from Genius API /search GET request
-# (search_result is one "result" in the "hits" list)
 def extractSongPathFromGeniusSearchResult(search_result):
     """Get the URL to the song lyrics out of the matching search result.
 
