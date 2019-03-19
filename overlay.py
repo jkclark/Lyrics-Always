@@ -1,13 +1,14 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import sys
+"""Most of the functions in this module create parts of the GUI."""
+
 #  import PyQt5.QtWidgets  # was used to redraw GUI (well attempted anyway)
 from PyQt5.QtWidgets import (QWidget,
                              QPushButton,
                              #  QHBoxLayout,
                              QVBoxLayout,
-                             QApplication,
+                             #  QApplication,
                              QLabel,
                              QScrollArea,
                              #  QSizePolicy,
@@ -22,6 +23,14 @@ class LyricsLabel(QLabel):
 
 
 class LyricsOverlay(QWidget):
+    """Overlay widget that displays song title, artist, and lyrics.
+
+    Attributes:
+        title (str): Title of the current song.
+        artist (str): Artist of the current song.
+        lyrics (str): Lyrics for the current song.
+
+    """
 
     def __init__(self, title, artist, lyrics):
         super().__init__()
@@ -45,6 +54,7 @@ class LyricsOverlay(QWidget):
         self.initializeUI()
 
     def initializeUI(self):
+        """Dynamically create all the parts of the GUI."""
         main_vertical_box = QVBoxLayout()
 
         song_info_box = self.assembleSongInfoBox()
@@ -74,6 +84,16 @@ class LyricsOverlay(QWidget):
         return self.current_song
 
     def didSongChange(self, new_title, new_artist):
+        """Check to see if 'new' song is different from current song.
+
+        Args:
+            new_title (str): Title of song to be compared with current song.
+            new_artist (str): Artist of song to be compared with current song.
+
+        Returns:
+            True if song is different from current song, False otherwise.
+
+        """
         new_song = self.createFullSongName(new_title, new_artist)
         if self.current_song == new_song:
             return False
@@ -86,11 +106,13 @@ class LyricsOverlay(QWidget):
 
     # UI Components #
     def assembleSongInfoBox(self):
+        """Create part(s) of the GUI."""
         song_info_box = QVBoxLayout()
         song_info_box.addWidget(self.song_label)
         return song_info_box
 
     def createSongLabel(self):
+        """Create part(s) of the GUI."""
         song_label = QLabel(self.current_song)
         song_label.setWordWrap(True)
         return song_label
@@ -99,6 +121,7 @@ class LyricsOverlay(QWidget):
         self.song_label.setText(self.current_song)
 
     def assembleLyricsBox(self):
+        """Create part(s) of the GUI."""
         #  lyrics_label = self.createLyricsLabel()
         scrolling_lyrics = self.assembleScrollingLyricsWidget(self.lyrics_label)
 
@@ -109,6 +132,7 @@ class LyricsOverlay(QWidget):
     # this function is very simple. I don't know if it really makes
     # sense to break it down anymore
     def assembleScrollingLyricsWidget(self, lyrics_label):
+        """Create part(s) of the GUI."""
         widget = QWidget()  # can change this later to be more specific widget
         widget_vert_layout = QVBoxLayout()
         lyrics_scroll_area = QScrollArea()
@@ -123,40 +147,24 @@ class LyricsOverlay(QWidget):
         return lyrics_scroll_area
 
     def createLyricsLabel(self):
+        """Create part(s) of the GUI."""
         lyrics_label = LyricsLabel(self.lyrics)
         lyrics_label.setWordWrap(True)
         return lyrics_label
 
     def assembleUpdateButtonBox(self):
+        """Create part(s) of the GUI."""
         update_button_box = QVBoxLayout()
         update_button = self.createUpdateButton()
         update_button_box.addWidget(update_button)
         return update_button_box
 
     def createUpdateButton(self):
+        """Create part(s) of the GUI."""
         update_button = QPushButton("Update", self)
         update_button.setToolTip("Show lyrics for current song")
         return update_button
 
     def _scrollToTop(self):
+        """Reset the view of the lyrics area to the top."""
         self.lyrics_scroll_area.verticalScrollBar().setValue(0)
-
-
-def getInitialPositionCoordinates(app):
-    screen = app.primaryScreen()
-    rect = screen.availableGeometry()
-    x = 0
-    y = int(rect.height() / 5.0)
-    width = 200
-    height = 3 * int(rect.height() / 5.0)
-    return [x, y, width, height]
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    initial_coords_and_dimens = getInitialPositionCoordinates(app)
-    temp_lyrics = "Lyrics go here\n\
-                   blah blach blacgh blasdkfj dfjdjf"
-    lyrics_overlay = LyricsOverlay(temp_lyrics)
-    lyrics_overlay.show()
-    sys.exit(app.exec_())
