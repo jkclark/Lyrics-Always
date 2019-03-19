@@ -14,7 +14,7 @@ Lyrics Always brings up a little overlay, displaying the lyrics to the song curr
 to the song's name and artist. The button underneath the lyrics updates the lyrics to match the song that is currently playing.
 That's all there is to it.
 
-### Credit Where Credit is Due
+## Credit Where Credit is Due
 Interacting with the Spotify API is done partly with [Spotipy](https://github.com/plamere/spotipy).
 
 ## Usage
