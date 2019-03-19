@@ -27,7 +27,7 @@ def load_credentials(credentials_pickle_file):
     """Get the Spotify API credentials by loading a pickle file.
 
     Args:
-        credentials_pickle_file (string): Path to pickle file containing creds.
+        credentials_pickle_file (str): Path to pickle file containing creds.
 
     Returns:
         dict: dictionary containing API keys, redirect URI, etc.
@@ -47,6 +47,11 @@ def get_user_token(username, scope, credentials_dict):
     Documenation for this Spotipy.util function is available here:
     https://spotipy.readthedocs.io/en/latest/?highlight=prompt%20user%20token#
     spotipy.util.prompt_for_user_token
+
+    Args:
+        username (str): username of Spotify account for which to get token.
+        scope (str): scope of authorization for Spotify token.
+        credentials_dict (dict of str: str): API keys and redirect URI
     """
     token = util.prompt_for_user_token(
             username,
@@ -54,7 +59,8 @@ def get_user_token(username, scope, credentials_dict):
             client_id=credentials_dict['SPOTIPY_CLIENT_ID'],
             client_secret=credentials_dict['SPOTIPY_CLIENT_SECRET'],
             redirect_uri=credentials_dict['SPOTIPY_REDIRECT_URI'],
-            )
+    )
+
     if token is None:
         print("Error: Can't get token for", username)
         sys.exit(1)
@@ -68,7 +74,7 @@ def get_current_playback_info_json(token):
         token: Spotify token to authorize requests for user playback info.
 
     Returns:
-        results (JSON object (dict)): JSON-format dictionary of playback info
+        JSON object (dict): JSON-format dictionary of playback info
 
     """
     sp = spotipy.Spotify(auth=token)

@@ -51,6 +51,20 @@ class User():
         return self.token
 
 
+def check_args():
+    """Make sure that the program is invoked correctly.
+
+    The program should be called by it's name, followed by a Spotify username.
+    """
+    if len(sys.argv) != 2:
+        print("Usage: %s username" % (sys.argv[0],))
+        sys.exit(1)
+
+
+def get_username():
+    return sys.argv[1]
+
+
 def getInitialPositionCoordinates(app):
     screen = app.primaryScreen()
     rect = screen.availableGeometry()
@@ -62,6 +76,7 @@ def getInitialPositionCoordinates(app):
 
 
 def checkResponseStatus(response_json):
+    """Check status field from GET request response."""
     status = response_json["meta"]["status"]
     return status
 
@@ -85,6 +100,16 @@ def getSongFromSpotify(user):
 
 
 def getLyricsForSong(song_title, song_artist):
+    """ Get lyrics for song whose name and artist match most closely to args."
+
+    Args:
+        song_title (str): Name of the song whose lyrics we want to get.
+        song_artist (str): Artist of the song whose lyrics we want to get.
+
+    Returns:
+        str: Lyrics for the song whose name and artist match args most closely.
+
+    """
     search_urls = genius.createSearchGETRequestURLs(song_title, song_artist)
     matching_hit = None
     for url in search_urls:
@@ -114,45 +139,64 @@ def getLyricsForSong(song_title, song_artist):
     return lyrics
 
 
-def update(user, la, app):
+def update(user, la_overlay, app):
+    """Update the lyrics to match the current song, and scroll to the top.
+
+    Args:
+        user (User): User object with information about Spotify account.
+        la_overlay (overlay.LyricsOverlay): Overlay instance currently in use.
+        app (PyGui QApplication): App instance of PyGUI running the overlay.
+
+    """
     title, artist = getSongFromSpotify(user)
-    if la.didSongChange(title, artist):
-        la.setCurrentSong(title, artist)
+    if la_overlay.didSongChange(title, artist):
+        # Set attributes to match the current song.
+        la_overlay.setCurrentSong(title, artist)
+
+        # Get the lyrics for the new song and set them as the overlay text
         lyrics = getLyricsForSong(title, artist)
-        la.setLyrics(lyrics)
-        print("Song updated: ", la.getCurrentSong())
+        la_overlay.setLyrics(lyrics)
+        print("Song updated: ", la_overlay.getCurrentSong())
+
+        # Re-render the app and scroll back to the top
         app.processEvents()
-        la._scrollToTop()
+        la_overlay._scrollToTop()
 
 
 def main():
-    # get user creds
-    spotify.check_args()
-    username = spotify.get_username()
+    # Create a User object and load Spotify credentials
+    check_args()
+    username = get_username()
     scope = spotify.get_scope()
     credentials_pickle_file = "credentials.p"
     credentials_dict = spotify.load_credentials(credentials_pickle_file)
     user = User(username, scope, credentials_dict)
 
+    # Get song information from User's Spotify player
     title, artist = getSongFromSpotify(user)
     lyrics = getLyricsForSong(title, artist)
 
-    # make app with lyrics
+    # Create app
     app = QApplication(sys.argv)
+
+    # Create overlay with song title, artist, and lyrics
+    lyrics_overlay = overlay.LyricsOverlay(title, artist, lyrics)
+
+    # Place app in correct location in correct size on screen
     initial_coords_and_dimens = getInitialPositionCoordinates(app)
     x, y, w, h = initial_coords_and_dimens
-
-    lyrics_overlay = overlay.LyricsOverlay(title, artist, lyrics)
     lyrics_overlay.setGeometry(x, y, w, h)
 
+    # Connect "Update" button with update() function
     push_button_child = lyrics_overlay.findChild(QPushButton)
     push_button_child.clicked.connect(lambda: update(user,
                                                      lyrics_overlay,
                                                      app))
 
-    # change color of entire window
+    # Load stylesheet for app
     lyrics_overlay.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
+    # Show the overlay
     lyrics_overlay.show()
     sys.exit(app.exec_())
 

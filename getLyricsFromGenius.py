@@ -1,8 +1,3 @@
-# 1. Search for song on Genius by "[title] by [artist]"
-# 2. Extract song ID from results
-# 3. Follow song path to Genius wepage, extract lyrics from 'lyrics' div w/ BS4
-
-
 import pickle
 import requests
 from bs4 import BeautifulSoup
@@ -11,11 +6,20 @@ import re
 
 
 def loadCredentials(credentials_pickle_file):
+    """Get the Genius API credentials by loading a pickle file.
+
+    Args:
+        credentials_pickle_file (str): Path to pickle file containing creds.
+
+    Returns:
+        dict: dictionary containing API keys, token, etc.
+
+    """
     try:
         with open(credentials_pickle_file, 'rb') as c:
             return pickle.load(c)
     except IOError:
-        print("Error: Couldn't open credentials file. Exiting")
+        print("Error: Couldn't open credentials file. Exiting.")
 
 
 def getGeniusAPIBaseURL():
@@ -29,9 +33,7 @@ def getResponseStatus(response):
 
 
 def createSearchGETRequestURLs(song_title, song_artist):
-    """
-    Creates a list of search URLs, each URL having a different variant of
-    (title + artist).
+    """Create a list of search URLs, each with a variant of (title + artist).
 
     The variants are:
         1. "song_title by song_artist"
@@ -44,14 +46,20 @@ def createSearchGETRequestURLs(song_title, song_artist):
     variant is not appended to the list (e.g., if song_title does not contain
     a '-', variant #3 is not created nor appended to the end of the list.
 
+    Args:
+        song_title (str): Title of song whose lyrics we want.
+        song_artist (str): Artist of song whose lyrics we want.
+
     Returns:
-        full_urls: a list of search URLs corresponding to the search terms
+        list of str: search URLs corresponding to the search terms
     """
+    # Variant #1
     search_terms = []
     search_terms.append(song_title + " by " + song_artist)
 
+    # Variant #2
     search_term_base = song_artist + " - "
-    search_terms.append(search_term_base + song_title)  # Variant #2
+    search_terms.append(search_term_base + song_title)
 
     # Variant #3
     if "-" in song_title:
@@ -68,11 +76,13 @@ def createSearchGETRequestURLs(song_title, song_artist):
     base_url = getGeniusAPIBaseURL()
     search = "/search?q="
     full_urls = [base_url + search + term for term in search_terms]
-    print("All search URLs: ", "\n".join(full_urls))
+
+    #  print("All search URLs: ", "\n".join(full_urls))
     return full_urls
 
 
 def prepareGETRequestHeaders():
+    """Create headers for GET request, which includes the API Client token."""
     credentials = loadCredentials("credentials.p")
     access_token = credentials["GENIUS_API_CLIENT_TOKEN"]
     headers = {"Authorization": "Bearer " + access_token}
@@ -88,7 +98,8 @@ def searchGenius(search_url):
         search_url: URL to GET
 
     Returns:
-        response_json: JSON object containing info about target song
+        JSON-format dict: JSON object containing info about target song
+
     """
     # GET request params
     headers = prepareGETRequestHeaders()
@@ -140,21 +151,29 @@ def checkArtistsMatch(song_artist, search_result):
 # search_result: "result" JSON from Genius API /search GET request
 # (search_result is one "result" in the "hits" list)
 def extractSongPathFromGeniusSearchResult(search_result):
+    """Get the URL to the song lyrics out of the matching search result.
+
+    Args:
+        search_result (JSON-format dict): JSON object with info about a song.
+
+    Returns:
+        str: part of URL to page of song lyrics.
+
+    """
     return search_result["path"]
 
 
 def findMatchingHitInSearchResults(song_title, song_artist, search_results):
-    """
-    Looks for a hit in search_results with a primary artist that matches
-    artist.
+    """ Looks for a hit with a primary artist that matches artist.
 
-    Parameters:
-        song_title: title to match
-        song_artist: artist to match
-        search_results: JSON object with list of hits
+    Args:
+        song_title (str): Title of song that we are trying to match.
+        song_artist (str): Artist of song that we are trying to match.
+        search_results (JSON-format dict): JSON object with list of hits.
 
     Returns:
-        "result" field of matching hit in JSON object
+        str: "result" field of matching hit in JSON object.
+
     """
     for hit in search_results["response"]["hits"]:
         artist_match = checkArtistsMatch(song_artist, hit["result"])
@@ -169,12 +188,22 @@ def getGeniusWebsiteBaseURL():
 
 
 def getLyricsPageHTMLFromPath(song_path):
+    """Get the HTML of the page containing song lyrics from Genius's website.
+
+    Args:
+        song_path (str): URL to page with song lyrics
+
+    Returns:
+        Response object: page HTML that contains lyrics
+
+    """
     lyrics_url = getGeniusWebsiteBaseURL() + song_path
     page_html = requests.get(lyrics_url)
     return page_html
 
 
 def parseLyricsPageHTML(html):
+    """Extract the lyrics from the song page's HTML."""
     html_text = BeautifulSoup(html.text, "html.parser")
     #  [h.extract() for h in lyrics_html('script')]
     lyrics = html_text.find("div", class_="lyrics").get_text()
