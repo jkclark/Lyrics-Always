@@ -1,10 +1,5 @@
 # Lyrics Always: Lyrics for Spotify
 
-### Notice 10/6/18:
-I'm still in the process of updating Lyrics Always, so what is here now is less usable than before I started updating it. You'll have to do some setup if you want to get it up and running on your machine.
-
----
-
 ## Intro
 Hi! I hope you're having a good day. I don't know about you, but I really like to
 sing the words to songs that I like. Nailing all of the words to Kendrick Lamar's "m.A.A.d city"
@@ -23,6 +18,7 @@ That's all there is to it.
 Interacting with the Spotify API is done partly with [Spotipy](https://github.com/plamere/spotipy).
 
 ## Usage
-You can run Lyrics Always by navigating to its directory and running `python3 lyrics.py <your_username>`
-
+Right now, it'll take a bit of setup for you to use Lyrics Always. You need Spotify API information and Genius API information, which I haven't figured out how to build safely into
+the app yet without revealing anything sensitive.
+Once I have this figured out, I'll update this section to include instructions.
 Enjoy!
