@@ -100,7 +100,7 @@ def getSongFromSpotify(user):
 
 
 def getLyricsForSong(song_title, song_artist):
-    """ Get lyrics for song whose name and artist match most closely to args."
+    """ Get lyrics for song whose name and artist match most closely to args.
 
     Args:
         song_title (str): Name of the song whose lyrics we want to get.
