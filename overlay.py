@@ -3,19 +3,21 @@
 
 """Most of the functions in this module create parts of the GUI."""
 
-from PyQt5.QtWidgets import (QWidget,
-                             QPushButton,
-                             QVBoxLayout,
-                             QLabel,
-                             QScrollArea,
-                             )
+from PyQt5.QtWidgets import (
+    QLabel,
+    QPushButton,
+    QScrollArea,
+    QVBoxLayout,
+    QWidget,
+)
 from PyQt5 import QtGui, QtCore
 
 
 class LyricsLabel(QLabel):
 
-    def __init__(self, lyrics):
+    def __init__(self, lyrics, font):
         QLabel.__init__(self, lyrics)
+        self.setFont(font)
 
 
 class LyricsOverlay(QWidget):
@@ -31,10 +33,13 @@ class LyricsOverlay(QWidget):
     def __init__(self, title, artist, lyrics):
         super().__init__()
 
+        self.font = QtGui.QFont("Times")
+
         self.title = title
         self.artist = artist
         self.current_song = self.createFullSongName(title, artist)
         self.song_label = self.createSongLabel()
+        self.updateSongLabel()
 
         self.lyrics = lyrics
         self.lyrics_label = self.createLyricsLabel()
@@ -97,7 +102,7 @@ class LyricsOverlay(QWidget):
     def setCurrentSong(self, new_title, new_artist):
         """ Set current_song and update song label """
         self.current_song = self.createFullSongName(new_title, new_artist)
-        self.song_label.setText(self.current_song)
+        self.updateSongLabel()
 
     # UI Components #
     def assembleSongInfoBox(self):
@@ -108,16 +113,16 @@ class LyricsOverlay(QWidget):
 
     def createSongLabel(self):
         """Create part(s) of the GUI."""
-        song_label = QLabel(self.current_song)
+        song_label = QLabel("")
+        song_label.setFont(self.font)
         song_label.setWordWrap(True)
         return song_label
 
     def updateSongLabel(self):
-        self.song_label.setText(self.current_song)
+        self.song_label.setText(f"Title: {self.title}\nArtist: {self.artist}")
 
     def assembleLyricsBox(self):
         """Create part(s) of the GUI."""
-        #  lyrics_label = self.createLyricsLabel()
         scrolling_lyrics = self.assembleScrollingLyricsWidget(self.lyrics_label)
 
         lyrics_vertical_box = QVBoxLayout()
@@ -143,7 +148,7 @@ class LyricsOverlay(QWidget):
 
     def createLyricsLabel(self):
         """Create part(s) of the GUI."""
-        lyrics_label = LyricsLabel(self.lyrics)
+        lyrics_label = LyricsLabel(self.lyrics, self.font)
         lyrics_label.setWordWrap(True)
         return lyrics_label
 

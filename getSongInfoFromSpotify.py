@@ -78,9 +78,7 @@ def get_current_playback_info_json(token):
 
     """
     sp = spotipy.Spotify(auth=token)
-    #  results = sp.current_user_playing_track()
     results = sp.current_playback()
-    print(f"Results: {results}")
     return results
 
 
