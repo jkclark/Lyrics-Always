@@ -1,14 +1,11 @@
-import overlay
-import getSongInfoFromSpotify as spotify
-import getLyricsFromGenius as genius
-
 from PyQt5.QtWidgets import (QApplication,
                              QPushButton)
-#  from PyQt5.QtCore import Qt  # imported for color
-#  from PyQt5 import QtGui
 import qdarkstyle
-
 import sys
+
+import getLyricsFromGenius as genius
+import getSongInfoFromSpotify as spotify
+import overlay
 
 
 class User():
@@ -41,10 +38,10 @@ class User():
     def requestToken(self):
         """Get a token to authorize Spotify API use for this user."""
         token = spotify.get_user_token(
-                    self.username,
-                    self.scope,
-                    self.credentials_dict,
-                )
+            self.username,
+            self.scope,
+            self.credentials_dict,
+        )
         return token
 
     def getToken(self):
@@ -93,6 +90,10 @@ def getSongFromSpotify(user):
 
     """
     playback_info_json = spotify.get_current_playback_info_json(user.token)
+
+    if not playback_info_json:
+        print("Error: Nothing playing on Spotify account: ", user.username)
+        sys.exit(1)
 
     song_title = spotify.getSongTitleFromPlaybackObj(playback_info_json)
     song_artist = spotify.getSongArtistFromPlaybackObj(playback_info_json)

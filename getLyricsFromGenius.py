@@ -1,8 +1,7 @@
-import pickle
-import requests
 from bs4 import BeautifulSoup
-
+import pickle
 import re
+import requests
 
 
 def loadCredentials(credentials_pickle_file):

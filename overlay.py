@@ -3,15 +3,11 @@
 
 """Most of the functions in this module create parts of the GUI."""
 
-#  import PyQt5.QtWidgets  # was used to redraw GUI (well attempted anyway)
 from PyQt5.QtWidgets import (QWidget,
                              QPushButton,
-                             #  QHBoxLayout,
                              QVBoxLayout,
-                             #  QApplication,
                              QLabel,
                              QScrollArea,
-                             #  QSizePolicy,
                              )
 from PyQt5 import QtGui, QtCore
 
@@ -48,7 +44,7 @@ class LyricsOverlay(QWidget):
         # (i.e., text does not wrap)
         #  self.lyrics_label.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
 
-        # this keeps the window on top (I don't know of any side effects yet)
+        # This keeps the window on top (I haven't noticed  any side effects yet)
         # use '|' to specify multiple flags
         QtGui.QWindow.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
         self.initializeUI()
@@ -77,7 +73,6 @@ class LyricsOverlay(QWidget):
         self.lyrics_label.setText(self.lyrics)
 
     def createFullSongName(self, title, artist):
-        #  return title + " - " + artist
         return artist + " - " + title
 
     def getCurrentSong(self):
@@ -129,8 +124,8 @@ class LyricsOverlay(QWidget):
         lyrics_vertical_box.addWidget(scrolling_lyrics)
         return lyrics_vertical_box
 
-    # this function is very simple. I don't know if it really makes
-    # sense to break it down anymore
+    # This function is already very simple. I don't know if it really makes
+    # sense to break it down any more
     def assembleScrollingLyricsWidget(self, lyrics_label):
         """Create part(s) of the GUI."""
         widget = QWidget()  # can change this later to be more specific widget

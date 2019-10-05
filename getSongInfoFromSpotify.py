@@ -1,7 +1,7 @@
-import sys
+import pickle
 import spotipy
 import spotipy.util as util
-import pickle
+import sys
 
 
 def check_args():
@@ -54,11 +54,11 @@ def get_user_token(username, scope, credentials_dict):
         credentials_dict (dict of str: str): API keys and redirect URI
     """
     token = util.prompt_for_user_token(
-            username,
-            scope,
-            client_id=credentials_dict['SPOTIPY_CLIENT_ID'],
-            client_secret=credentials_dict['SPOTIPY_CLIENT_SECRET'],
-            redirect_uri=credentials_dict['SPOTIPY_REDIRECT_URI'],
+        username,
+        scope,
+        client_id=credentials_dict['SPOTIPY_CLIENT_ID'],
+        client_secret=credentials_dict['SPOTIPY_CLIENT_SECRET'],
+        redirect_uri=credentials_dict['SPOTIPY_REDIRECT_URI'],
     )
 
     if token is None:
@@ -104,6 +104,9 @@ def main():
     credentials_dict = load_credentials(credentials_pickle_file)
     token = get_user_token(username, scope, credentials_dict)
     unparsed_playback_info_json = get_current_playback_info_json(token)
+    if not unparsed_playback_info_json:
+        print("Error: Nothing playing on Spotify account: ", username)
+        sys.exit(1)
     song_title = getSongTitleFromPlaybackObj(unparsed_playback_info_json)
     print("current song title:", song_title)
     song_artist = getSongArtistFromPlaybackObj(unparsed_playback_info_json)
